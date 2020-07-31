@@ -6,7 +6,8 @@ from typ import Image as ImageType
 import cv2
 from utils import (
     get_palette,
-    nearest_color
+    nearest_color,
+    randomize_strokes_order
 )
 
 
@@ -25,12 +26,12 @@ def vangogh(
     img: ImageType,
     batch_size: int = 10000,
     blur_size: int = 3,
-    min_length: int = 2,
-    max_length: int = 8,
+    min_stroke_length: int = 2,
+    max_stroke_length: int = 8,
     angle: int = 90,
-    scale_divider: int = 1000
+    stroke_scale_divider: int = 1000
 ) -> ImageType:
-    grid = []
+    grid = randomize_strokes_order(img)
     img_res = cv2.medianBlur(img, blur_size)
     img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     palette = get_palette(img)
@@ -40,13 +41,13 @@ def vangogh(
         for _, (y, x) in enumerate(grid[h : len(grid)]):
             color = palette[nearest_color(palette, img[y][x])]
             angle = math.degrees(math.atan2(fieldy[y, x], fieldx[y, x])) + angle
-            stroke_scale = int(math.ceil(max(img.shape) / scale_divider))
-            length = randint(min_length, max_length)
+            stroke_scale = int(math.ceil(max(img.shape) / stroke_scale_divider))
+            length = randint(min_stroke_length, max_stroke_length)
             cv2.ellipse(
                 img_res,
                 (x, y),
                 (length, stroke_scale),
-                angle, 0, 360, color, -1, cv2.LINE_A
+                angle, 0, 360, color, -1
             )
 
     return img_res
