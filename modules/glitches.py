@@ -103,18 +103,21 @@ def offset_rectangle(
     img,
     start_x: int,
     start_y: int,
-    chunk_height: int
+    chunk_length: int,
+    side: str
 ) -> ImageType:
     img_height, img_width, _ = img.shape
-    chunk_height = min(chunk_height, img_height - start_y)
-    stop_y = start_y + chunk_height
+    chunk_length = min(chunk_length, img_height - start_y)
+    stop_y = start_y + chunk_length
 
-    stop_x = img_width - start_x
-
-    left_chunk = img[start_y:stop_y, start_x:]
-    wrap_chunk = img[start_y:stop_y, :start_x]
-    img[start_y:stop_y, :stop_x] = left_chunk
-    img[start_y:stop_y, stop_x:] = wrap_chunk
+    if side == 'left':
+        stop_x = img_width - start_x
+        chunk = img[start_y:stop_y, start_x:]
+        img[start_y:stop_y, :stop_x] = chunk
+    else:
+        stop_x = start_x
+        chunk = img[start_y:stop_y, :img_width - start_x]
+        img[start_y:stop_y, stop_x:] = chunk
 
     return img
 
