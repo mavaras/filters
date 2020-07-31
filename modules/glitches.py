@@ -1,13 +1,14 @@
-from typing import List, Union
+from typing import Dict, List, Union
 import random
 import cv2
 
-from typ import Image as ImageType
+from typ import Image as ImageType, BLACK
 from modules.vaporize import get_face_classifier
 
 
 def glitch(
     img: ImageType,
+    translation_x: Dict[str, int],
     area: List[int] = None,
     face: bool = False,
     n_slices: int = 20
@@ -18,9 +19,9 @@ def glitch(
         faces = face_cascade.detectMultiScale(gray, 1.3, 5)
         for _face in faces:
             _face = [int(element) for element in _face]
-            draw_glitch(img, *_face, n_slices)
+            draw_glitch(img, *_face, n_slices, translation_x)
     else:
-        draw_glitch(img, *area, n_slices)
+        draw_glitch(img, *area, n_slices, translation_x)
 
     return img
 
@@ -36,6 +37,7 @@ def abstract_glitch(
         n_slices=n_slices,
         abstract=True
     )
+
     return img
 
 
@@ -46,6 +48,7 @@ def draw_glitch(
     area_w: int,
     area_h: int,
     n_slices: int,
+    translation_x: Dict[str, int],
     abstract: bool = False
 ) -> ImageType:
     _, img_width, _ = img.shape
@@ -59,14 +62,19 @@ def draw_glitch(
         else:
             inc = prev_slice_height
         glitch_start_y = area_y + inc
-        glitch_end_y = area_y + (sum(slice_heights[:itr]) + slice_height)
-        dist = random.randint(15, 30)
+        glitch_end_y = area_y + inc + slice_height#(sum(slice_heights[:itr]) + slice_height)
+        dist = random.randint(
+            translation_x.get('low_lim', 0),
+            translation_x.get('up_lim', 0)
+        )
 
         glitch_w = area_x + dist
         if glitch_w + area_w > img_width:
             glitch_w -= (glitch_w + area_w - img_width)
         img[glitch_start_y:glitch_end_y, glitch_w:glitch_w + area_w] = \
             img[glitch_start_y:glitch_end_y, area_x:area_x + area_w]
+        if itr - 30 in [2, 13]:
+            img[glitch_start_y:glitch_end_y, glitch_w:glitch_w + area_w] = BLACK
 
         prev_slice_height = slice_height
 
@@ -89,3 +97,60 @@ def get_slice_height(
             slice_height.append(int(heights[index]))
 
     return slice_height
+
+
+def offset_rectangle(
+    img,
+    start_x: int,
+    start_y: int,
+    chunk_height: int
+) -> ImageType:
+    img_height, img_width, _ = img.shape
+    chunk_height = min(chunk_height, img_height - start_y)
+    stop_y = start_y + chunk_height
+
+    stop_x = img_width - start_x
+
+    left_chunk = img[start_y:stop_y, start_x:]
+    wrap_chunk = img[start_y:stop_y, :start_x]
+    img[start_y:stop_y, :stop_x] = left_chunk
+    img[start_y:stop_y, stop_x:] = wrap_chunk
+
+    return img
+
+
+def offset_rect_colorized(
+    img: ImageType,
+    area: List[int],
+    channel: int = 1,
+    randomize: bool = False
+ ) -> ImageType:
+
+    return draw_offset_rect_colorized(img, *area, channel, randomize)
+
+
+def draw_offset_rect_colorized(
+    img,
+    area_x: int = 50,
+    area_y: int = 50,
+    area_w: int = 120,
+    area_h: int = 410,
+    channel: int = 1,
+    randomize: bool = False
+) -> ImageType:
+    img_height, img_width, _ = img.shape
+    offset_x = random.randint(
+       0,
+        abs(img_width - (area_w + area_x))
+    ) if randomize else 0
+    offset_y = random.randint(
+        0,
+        abs(img_height - (area_h + area_y))
+    ) if randomize else 0
+    img[
+        area_y:area_y + area_h,
+        area_x:area_x + area_w,
+        channel
+    ] = img[offset_y:area_h + offset_y, offset_x:area_w + offset_x, channel]
+
+    return img

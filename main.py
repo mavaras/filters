@@ -1,5 +1,6 @@
 import sys
 import time
+import random
 import argparse
 import uuid
 import cv2
@@ -22,14 +23,21 @@ IMG_PATH = ARGS.image or 'imgs/me.jpeg'
 def main():
     img = cv2.imread(IMG_PATH)
     # grid = randomize_strokes_order(img)
+    h, w, _ = img.shape
+    print(f'Image dimensions. {h}x{w}')
     area = {
-        'x': 0,
-        'y': 0,
-        'width': 270,
-        'height': 500,
+        'x': w // 3,
+        'y': 10,
+        'width': int(w // 1.8),
+        'height': 320,
     }
-    img_res = glitches.abstract_glitch(img, area=area.values())
-    #img_res = vangogh.vangogh(img)
+    '''img_ress = glitches.offset_rect_colorized(
+        img,
+        area.values(),
+        channel=2,
+        randomize=True
+    )'''
+    img_res = glitches.test(img, 200, 0, 600)
     if ARGS.write_output:
         cv2.imwrite(f'outimgs/out_{uuid.uuid4()}.jpg', img_res)
     cv2.imshow('img_res', img_res)
