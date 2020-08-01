@@ -3,7 +3,8 @@ from .glitches import (
     abstract_glitch,
     cycle_glitch,
     offset_rect,
-    offset_rect_colorized
+    offset_rect_colorized,
+    spilled_glitch
 )
 
 __all__ = [
@@ -11,5 +12,6 @@ __all__ = [
     'abstract_glitch',
     'cycle_glitch',
     'offset_rect',
-    'offset_rect_colorized'
+    'offset_rect_colorized',
+    'spilled_glitch'
 ]

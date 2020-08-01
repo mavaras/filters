@@ -1,5 +1,6 @@
 from typing import Dict, List
 import cv2
+import numpy as np
 
 from typ import (
     Image as ImageType,
@@ -8,7 +9,8 @@ from modules.vaporize import get_face_classifier
 from modules.glitches.glitches_domain import (
     draw_glitch,
     draw_offset_rect,
-    draw_offset_rect_colorized
+    draw_offset_rect_colorized,
+    draw_spilled_glitch
 )
 
 
@@ -94,4 +96,19 @@ def offset_rect_colorized(
         *area,
         channel,
         randomize
+    )
+
+
+def spilled_glitch(
+    img: ImageType,
+    area: List[int],
+    start_pos: int,
+    vertical: bool = False
+) -> ImageType:
+
+    return draw_spilled_glitch(
+        img,
+        *area,
+        start_pos,
+        vertical
     )

@@ -1,4 +1,5 @@
 from typing import Dict, List, Union
+import numpy as np
 
 from typ import (
     Image as ImageType,
@@ -121,3 +122,30 @@ def draw_offset_rect_colorized(
     ] = img[offset_y:area_h + offset_y, offset_x:area_w + offset_x, channel]
 
     return img
+
+
+def draw_spilled_glitch(
+    img: ImageType,
+    area_x: int,
+    area_y: int,
+    area_w: int,
+    area_h: int,
+    start_pos: int,
+    vertical: bool = False
+) -> ImageType:
+    if vertical:
+        img = np.rot90(img[::-1])
+    selection = (
+        slice(),
+        slice(area_x, area_x + area_w)
+    )
+    chunk = img[
+        start_pos:area_y + area_h,
+        area_x:area_x + area_w
+    ]
+
+    for itr, pixel in enumerate(chunk[0]):
+        line = (selection[0], itr)
+        img[line] = pixel
+
+    return np.rot90(img) if vertical else img
