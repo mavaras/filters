@@ -136,16 +136,13 @@ def draw_spilled_glitch(
     if vertical:
         img = np.rot90(img[::-1])
     selection = (
-        slice(),
+        slice(start_pos, area_y + area_h),
         slice(area_x, area_x + area_w)
     )
-    chunk = img[
-        start_pos:area_y + area_h,
-        area_x:area_x + area_w
-    ]
+    chunk = img[selection]
 
     for itr, pixel in enumerate(chunk[0]):
-        line = (selection[0], itr)
-        img[line] = pixel
+        sel = (selection[0], itr)
+        img[sel] = pixel
 
     return np.rot90(img) if vertical else img
