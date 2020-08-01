@@ -41,6 +41,36 @@ def abstract_glitch(
     return img
 
 
+def cycle_glitch(
+    img: ImageType,
+    translation_x: Dict[str, int],    
+
+    area_x: int,
+    area_y: int,
+    area_w: int,
+    area_h: int,
+
+    n_slices: int = 20
+) -> ImageType:
+    slice_height = round(area_h / n_slices)
+
+    for itr in range(0, n_slices):
+        inc = itr * slice_height
+        glitch_start_y = area_y + inc
+        glitch_end_y = area_y + inc + slice_height
+        offset = random.randint(
+            translation_x.get('low_lim', 0),
+            translation_x.get('up_lim', 0)
+        )
+        glitch_w = area_x + area_w
+        img[glitch_start_y:glitch_end_y, offset:area_x + glitch_w] = \
+            img[glitch_start_y:glitch_end_y, :area_x + glitch_w - offset]
+        img[glitch_start_y:glitch_end_y, area_x:offset] = \
+            img[glitch_start_y:glitch_end_y, glitch_w - offset:glitch_w]
+
+    return img
+
+
 def draw_glitch(
     img: ImageType,
     area_x: int,
@@ -61,8 +91,9 @@ def draw_glitch(
             inc = itr * slice_height
         else:
             inc = prev_slice_height
+        
         glitch_start_y = area_y + inc
-        glitch_end_y = area_y + inc + slice_height#(sum(slice_heights[:itr]) + slice_height)
+        glitch_end_y = area_y + inc + slice_height
         dist = random.randint(
             translation_x.get('low_lim', 0),
             translation_x.get('up_lim', 0)
@@ -73,8 +104,6 @@ def draw_glitch(
             glitch_w -= (glitch_w + area_w - img_width)
         img[glitch_start_y:glitch_end_y, glitch_w:glitch_w + area_w] = \
             img[glitch_start_y:glitch_end_y, area_x:area_x + area_w]
-        if itr - 30 in [2, 13]:
-            img[glitch_start_y:glitch_end_y, glitch_w:glitch_w + area_w] = BLACK
 
         prev_slice_height = slice_height
 

@@ -26,10 +26,14 @@ def main():
     h, w, _ = img.shape
     print(f'Image dimensions. {h}x{w}')
     area = {
-        'x': w // 3,
-        'y': 10,
-        'width': int(w // 1.8),
-        'height': 320,
+        'x': 0,
+        'y': 0,
+        'width': w - 10,
+        'height': h,
+    }
+    translation_x = {
+        'low_lim': 20,
+        'up_lim': 45
     }
     '''img_ress = glitches.offset_rect_colorized(
         img,
@@ -37,7 +41,18 @@ def main():
         channel=2,
         randomize=True
     )'''
-    img_res = glitches.test(img, 200, 0, 600)
+    '''
+    img_res = glitches.glitch(
+        img,
+        translation_x,
+        area.values(),
+        n_slices=20
+    )'''
+    img_res = glitches.cycle_glitch(
+        img,
+        translation_x,
+        *area.values()
+    )
     if ARGS.write_output:
         cv2.imwrite(f'outimgs/out_{uuid.uuid4()}.jpg', img_res)
     cv2.imshow('img_res', img_res)
