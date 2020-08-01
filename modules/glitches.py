@@ -2,7 +2,10 @@ from typing import Dict, List, Union
 import random
 import cv2
 
-from typ import Image as ImageType, BLACK
+from typ import (
+    Image as ImageType,
+    GlitchTypes
+)
 from modules.vaporize import get_face_classifier
 
 
@@ -28,6 +31,7 @@ def glitch(
 
 def abstract_glitch(
     img: ImageType,
+    translation_x: Dict[str, int],
     area: List[int] = None,
     n_slices: int = 20
 ) -> ImageType:
@@ -35,7 +39,8 @@ def abstract_glitch(
         img,
         *area,
         n_slices=n_slices,
-        abstract=True
+        translation_x=translation_x,
+        gtype='abstract'
     )
 
     return img
@@ -43,30 +48,17 @@ def abstract_glitch(
 
 def cycle_glitch(
     img: ImageType,
-    translation_x: Dict[str, int],    
-
-    area_x: int,
-    area_y: int,
-    area_w: int,
-    area_h: int,
-
+    translation_x: Dict[str, int],
+    area: List[int],
     n_slices: int = 20
 ) -> ImageType:
-    slice_height = round(area_h / n_slices)
-
-    for itr in range(0, n_slices):
-        inc = itr * slice_height
-        glitch_start_y = area_y + inc
-        glitch_end_y = area_y + inc + slice_height
-        offset = random.randint(
-            translation_x.get('low_lim', 0),
-            translation_x.get('up_lim', 0)
-        )
-        glitch_w = area_x + area_w
-        img[glitch_start_y:glitch_end_y, offset:area_x + glitch_w] = \
-            img[glitch_start_y:glitch_end_y, :area_x + glitch_w - offset]
-        img[glitch_start_y:glitch_end_y, area_x:offset] = \
-            img[glitch_start_y:glitch_end_y, glitch_w - offset:glitch_w]
+    draw_glitch(
+        img,
+        *area,
+        n_slices=n_slices,
+        translation_x=translation_x,
+        gtype='cycle'
+    )
 
     return img
 
@@ -79,7 +71,7 @@ def draw_glitch(
     area_h: int,
     n_slices: int,
     translation_x: Dict[str, int],
-    abstract: bool = False
+    gtype: str = 'normal'
 ) -> ImageType:
     _, img_width, _ = img.shape
     slice_heights = get_slice_height(area_h, n_slices, equals=True)
@@ -87,13 +79,15 @@ def draw_glitch(
 
     for itr in range(0, n_slices):
         slice_height = slice_heights[itr]
-        if not abstract:
-            inc = itr * slice_height
-        else:
+
+        if gtype == GlitchTypes.ABSTRACT.value:
             inc = prev_slice_height
-        
+            glitch_end_y = area_y + sum(slice_heights[:itr]) + slice_height
+        else:
+            inc = itr * slice_height
+            glitch_end_y = area_y + inc + slice_height
         glitch_start_y = area_y + inc
-        glitch_end_y = area_y + inc + slice_height
+
         dist = random.randint(
             translation_x.get('low_lim', 0),
             translation_x.get('up_lim', 0)
@@ -102,8 +96,15 @@ def draw_glitch(
         glitch_w = area_x + dist
         if glitch_w + area_w > img_width:
             glitch_w -= (glitch_w + area_w - img_width)
-        img[glitch_start_y:glitch_end_y, glitch_w:glitch_w + area_w] = \
-            img[glitch_start_y:glitch_end_y, area_x:area_x + area_w]
+        if gtype == GlitchTypes.CYCLE.value:
+            glitch_w = area_x + area_w
+            img[glitch_start_y:glitch_end_y, dist:area_x + glitch_w] = \
+                img[glitch_start_y:glitch_end_y, :area_x + glitch_w - dist]
+            img[glitch_start_y:glitch_end_y, area_x:dist] = \
+                img[glitch_start_y:glitch_end_y, glitch_w - dist:glitch_w]
+        else:
+            img[glitch_start_y:glitch_end_y, glitch_w:glitch_w + area_w] = \
+                img[glitch_start_y:glitch_end_y, area_x:area_x + area_w]
 
         prev_slice_height = slice_height
 
@@ -163,11 +164,11 @@ def offset_rect_colorized(
 
 def draw_offset_rect_colorized(
     img,
-    area_x: int = 50,
-    area_y: int = 50,
-    area_w: int = 120,
-    area_h: int = 410,
-    channel: int = 1,
+    area_x: int,
+    area_y: int,
+    area_w: int,
+    area_h: int,
+    channel: int,
     randomize: bool = False
 ) -> ImageType:
     img_height, img_width, _ = img.shape
