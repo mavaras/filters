@@ -4,9 +4,7 @@ import numpy as np
 import cv2
 from sklearn.cluster import KMeans
 
-import matplotlib as mpl
 import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
 
 from typ import (
     Image as ImageType,
@@ -52,31 +50,28 @@ def nearest_color(palette: PaletteType, value: int) -> int:
 
 
 def vector_field(img: ImageType):
-    flat_image = (img[:, :, 0] + img[:, :, 1] + img[:, :, 2 ]) / 3.
-    r, c = np.shape(flat_image)
+    flat_image = (img[:, :, 0] + img[:, :, 1] + img[:, :, 2]) / 3.
     gd = 4
 
-    test_slice = flat_image[::gd, ::gd]  # sampling
-
-    fig, ax = plt.subplots(1, 1)
+    _, ax = plt.subplots(1, 1)
     the_image = ax.imshow(
         flat_image,
         zorder=0,
         alpha=1.0,
-        cmap="Greys_r",
-        origin="upper",
-        interpolation="hermite",
+        cmap='Greys_r',
+        origin='upper',
+        interpolation='hermite',
     )
-    return the_image  # I dont know wtf is this (dont consider this code as mine pls)
-    plt.colorbar(the_image)
-    Y, X = np.mgrid[0:r:gd, 0:c:gd]
-    dY, dX = np.gradient(test_slice)
-    ax.quiver(X, Y, dX, dY, color='r')
-    plt.show()
+
+    return the_image
 
 
-def direction(a: int, b: int) -> int:
-    return math.atan2(a, b)
+def direction(n_1: int, n_2: int) -> int:
+    return math.atan2(n_1, n_2)
+
+
+def randomi(low_lim: int, up_lim: int) -> int:
+    return random.randint(low_lim, up_lim)
 
 
 def randomized_grid(height: int, width: int, scale: int):
@@ -108,12 +103,13 @@ def get_palette(img: ImageType) -> PaletteType:
     clt = KMeans(n_clusters=24, n_jobs=1, n_init=10)
     clt.fit(img.reshape(-1, 3))
     palette = clt.cluster_centers_
+    masks = [(0, 50, 0), (15, 30, 0), (-15, 30, 0), (-5, 220, 15)]
     extension = [
         regulate(
             palette.reshape((1, len(palette), 3)).astype(np.uint8),
             *mask
         ).reshape((-1, 3))
-        for mask in [(0, 50, 0), (15, 30, 0), (-15, 30, 0), (-5, 220, 15)]
+        for mask in masks
     ]
 
     return np.vstack([palette] + extension)

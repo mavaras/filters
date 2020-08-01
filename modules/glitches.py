@@ -1,11 +1,11 @@
 from typing import Dict, List, Union
-import random
 import cv2
 
 from typ import (
     Image as ImageType,
     GlitchTypes
 )
+from utils import randomi
 from modules.vaporize import get_face_classifier
 
 
@@ -88,7 +88,7 @@ def draw_glitch(
             glitch_end_y = area_y + inc + slice_height
         glitch_start_y = area_y + inc
 
-        dist = random.randint(
+        dist = randomi(
             translation_x.get('low_lim', 0),
             translation_x.get('up_lim', 0)
         )
@@ -123,7 +123,7 @@ def get_slice_height(
         slice_height = []
         heights = [area_h // (n_slices - 2), area_h // (n_slices + 2)]
         for _ in range(n_slices):
-            index = random.randint(0, 1)
+            index = randomi(0, 1)
             slice_height.append(int(heights[index]))
 
     return slice_height
@@ -172,11 +172,11 @@ def draw_offset_rect_colorized(
     randomize: bool = False
 ) -> ImageType:
     img_height, img_width, _ = img.shape
-    offset_x = random.randint(
+    offset_x = randomi(
        0,
         abs(img_width - (area_w + area_x))
     ) if randomize else 0
-    offset_y = random.randint(
+    offset_y = randomi(
         0,
         abs(img_height - (area_h + area_y))
     ) if randomize else 0
