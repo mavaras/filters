@@ -1,66 +1,10 @@
 from typing import Dict, List, Union
-import cv2
 
 from typ import (
     Image as ImageType,
     GlitchTypes
 )
 from utils import randomi
-from modules.vaporize import get_face_classifier
-
-
-def glitch(
-    img: ImageType,
-    translation_x: Dict[str, int],
-    area: List[int] = None,
-    face: bool = False,
-    n_slices: int = 20
-) -> ImageType:
-    if face:
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        face_cascade = get_face_classifier()
-        faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-        for _face in faces:
-            _face = [int(element) for element in _face]
-            draw_glitch(img, *_face, n_slices, translation_x)
-    else:
-        draw_glitch(img, *area, n_slices, translation_x)
-
-    return img
-
-
-def abstract_glitch(
-    img: ImageType,
-    translation_x: Dict[str, int],
-    area: List[int] = None,
-    n_slices: int = 20
-) -> ImageType:
-    draw_glitch(
-        img,
-        *area,
-        n_slices=n_slices,
-        translation_x=translation_x,
-        gtype='abstract'
-    )
-
-    return img
-
-
-def cycle_glitch(
-    img: ImageType,
-    translation_x: Dict[str, int],
-    area: List[int],
-    n_slices: int = 20
-) -> ImageType:
-    draw_glitch(
-        img,
-        *area,
-        n_slices=n_slices,
-        translation_x=translation_x,
-        gtype='cycle'
-    )
-
-    return img
 
 
 def draw_glitch(
@@ -101,7 +45,7 @@ def draw_glitch(
             img[glitch_start_y:glitch_end_y, dist:area_x + glitch_w] = \
                 img[glitch_start_y:glitch_end_y, :area_x + glitch_w - dist]
             img[glitch_start_y:glitch_end_y, area_x:dist] = \
-                img[glitch_start_y:glitch_end_y, glitch_w - dist:glitch_w]
+                img[glitch_start_y:glitch_end_y, glitch_w - dist + area_x:glitch_w]
         else:
             img[glitch_start_y:glitch_end_y, glitch_w:glitch_w + area_w] = \
                 img[glitch_start_y:glitch_end_y, area_x:area_x + area_w]
@@ -129,7 +73,7 @@ def get_slice_height(
     return slice_height
 
 
-def offset_rectangle(
+def draw_offset_rect(
     img,
     start_x: int,
     start_y: int,
@@ -150,16 +94,6 @@ def offset_rectangle(
         img[start_y:stop_y, stop_x:] = chunk
 
     return img
-
-
-def offset_rect_colorized(
-    img: ImageType,
-    area: List[int],
-    channel: int = 1,
-    randomize: bool = False
- ) -> ImageType:
-
-    return draw_offset_rect_colorized(img, *area, channel, randomize)
 
 
 def draw_offset_rect_colorized(
