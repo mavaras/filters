@@ -10,6 +10,7 @@ from modules.glitches.glitches_domain import (
     draw_glitch,
     draw_offset_rect,
     draw_offset_rect_colorized,
+    draw_pixelize_glitch,
     draw_spilled_glitch
 )
 
@@ -111,4 +112,19 @@ def spilled_glitch(
         *area,
         start_pos,
         vertical
+    )
+
+
+def pixelize_glitch(
+    img: ImageType,
+    area: List[int],
+    n_slices: int,
+    gtype: str = 'random'
+) -> ImageType:
+
+    return draw_pixelize_glitch(
+        img,
+        *area,
+        n_slices,
+        gtype
     )

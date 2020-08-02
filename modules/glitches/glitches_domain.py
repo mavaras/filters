@@ -142,7 +142,72 @@ def draw_spilled_glitch(
     chunk = img[selection]
 
     for itr, pixel in enumerate(chunk[0]):
-        sel = (selection[0], itr)
-        img[sel] = pixel
+        line_sel = (selection[0], itr)
+        img[line_sel] = pixel
 
     return np.rot90(img) if vertical else img
+
+
+def draw_pixelize_glitch(
+    img: ImageType,
+    area_x: int,
+    area_y: int,
+    area_w: int,
+    area_h: int,
+    n_slices: int,
+    gtype: str = 'image_based_inv'
+) -> ImageType:
+    slice_height = round(area_h / n_slices)
+
+    for itr in range(n_slices):
+        inc = itr * slice_height
+        glitch_start_y = area_y + inc
+        glitch_end_y = area_y + inc + slice_height
+
+        for col_itr in range(0, area_w):
+            col_inc = slice_height * col_itr
+            prev_col_inc = slice_height * (col_itr - 1)
+
+            curr_pixel_color = img[
+                glitch_start_y:glitch_end_y,
+                area_x + prev_col_inc:area_x + col_inc
+            ]
+            if gtype == 'random':
+                pixel_color = [randomi(15, 260), randomi(15, 260), randomi(15, 260)]
+            elif curr_pixel_color.any():
+                if gtype == 'image_based':
+                    pixel_color = colorize_pixel(
+                        curr_pixel_color[0][0][0],
+                        curr_pixel_color[0][0][1],
+                        curr_pixel_color[0][0][2],
+                        18
+                    )
+                elif gtype == 'image_based_inv':
+                    pixel_color = colorize_pixel(
+                        255 - curr_pixel_color[0][0][0],
+                        255 - curr_pixel_color[0][0][1],
+                        255 - curr_pixel_color[0][0][2],
+                        18
+                    )
+            else:
+                pixel_color = curr_pixel_color
+            img[
+                glitch_start_y:glitch_end_y,
+                area_x + prev_col_inc:area_x + col_inc,
+            ] = pixel_color
+    
+    return img
+
+
+def colorize_pixel(
+    r_value: int,
+    g_value: int,
+    b_value: int,
+    range_size: int
+) -> List[int]:
+
+    return [
+        randomi(r_value - range_size, r_value + range_size),
+        randomi(g_value - range_size, g_value + range_size),
+        randomi(b_value - range_size, b_value + range_size)
+    ]
