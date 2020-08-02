@@ -157,7 +157,8 @@ def draw_pixelize_glitch(
     area_h: int,
     n_slices: int,
     gtype: str = 'random',
-    by_pixel: bool = True
+    by_pixel: bool = True,
+    channel: int = None
 ) -> ImageType:
     slice_height = round(area_h / n_slices)
 
@@ -168,7 +169,7 @@ def draw_pixelize_glitch(
         prev_col_inc = 0
 
         for _ in range(0, area_w):
-            dist = randomi(170, 220) if not by_pixel else slice_height
+            dist = randomi(90, 220) if not by_pixel and randomi(0, 1) else slice_height
             col_inc = prev_col_inc + dist
 
             curr_pixel_color = img[
@@ -211,10 +212,17 @@ def draw_pixelize_glitch(
             else:
                 pixel_color = curr_pixel_color
 
-            img[
-                glitch_start_y:glitch_end_y,
-                area_x + prev_col_inc:area_x + col_inc,
-            ] = pixel_color
+            if channel:
+                img[
+                    glitch_start_y:glitch_end_y,
+                    area_x + prev_col_inc:area_x + col_inc,
+                    channel
+                ] = pixel_color[channel]
+            else:
+                img[
+                    glitch_start_y:glitch_end_y,
+                    area_x + prev_col_inc:area_x + col_inc,
+                ] = pixel_color
             prev_col_inc = area_x + col_inc
 
     return img
