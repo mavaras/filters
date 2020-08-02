@@ -1,4 +1,5 @@
 from typing import Dict, List, Union
+import random
 import numpy as np
 
 from typ import (
@@ -155,7 +156,8 @@ def draw_pixelize_glitch(
     area_w: int,
     area_h: int,
     n_slices: int,
-    gtype: str = 'image_based_inv'
+    gtype: str = 'random',
+    by_pixel: bool = True
 ) -> ImageType:
     slice_height = round(area_h / n_slices)
 
@@ -163,17 +165,23 @@ def draw_pixelize_glitch(
         inc = itr * slice_height
         glitch_start_y = area_y + inc
         glitch_end_y = area_y + inc + slice_height
+        prev_col_inc = 0
 
-        for col_itr in range(0, area_w):
-            col_inc = slice_height * col_itr
-            prev_col_inc = slice_height * (col_itr - 1)
+        for _ in range(0, area_w):
+            dist = randomi(170, 220) if not by_pixel else slice_height
+            col_inc = prev_col_inc + dist
 
             curr_pixel_color = img[
                 glitch_start_y:glitch_end_y,
                 area_x + prev_col_inc:area_x + col_inc
             ]
+
             if gtype == 'random':
-                pixel_color = [randomi(15, 260), randomi(15, 260), randomi(15, 260)]
+                pixel_color = [
+                    randomi(15, 260),
+                    randomi(15, 260),
+                    randomi(15, 260)
+                ]
             elif curr_pixel_color.any():
                 if gtype == 'image_based':
                     pixel_color = colorize_pixel(
@@ -189,13 +197,26 @@ def draw_pixelize_glitch(
                         255 - curr_pixel_color[0][0][2],
                         18
                     )
+                elif gtype == 'image_based_rand':
+                    pixels_order = [
+                        curr_pixel_color[0][0][0],
+                        curr_pixel_color[0][0][1],
+                        curr_pixel_color[0][0][2]
+                    ]
+                    random.shuffle(pixels_order)
+                    pixel_color = colorize_pixel(
+                        *pixels_order,
+                        18
+                    )
             else:
                 pixel_color = curr_pixel_color
+
             img[
                 glitch_start_y:glitch_end_y,
                 area_x + prev_col_inc:area_x + col_inc,
             ] = pixel_color
-    
+            prev_col_inc = area_x + col_inc
+
     return img
 
 

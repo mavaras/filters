@@ -119,12 +119,14 @@ def pixelize_glitch(
     img: ImageType,
     area: List[int],
     n_slices: int,
-    gtype: str = 'random'
+    gtype: str = 'random',
+    by_pixel: bool = True
 ) -> ImageType:
 
     return draw_pixelize_glitch(
         img,
         *area,
         n_slices,
-        gtype
+        gtype,
+        by_pixel
     )
