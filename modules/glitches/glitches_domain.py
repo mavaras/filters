@@ -149,6 +149,7 @@ def draw_spilled_glitch(
     return np.rot90(img) if vertical else img
 
 
+# pylint: disable=too-many-locals, too-many-arguments, dangerous-default-value
 def draw_pixelize_glitch(
     img: ImageType,
     area_x: int,
@@ -158,7 +159,10 @@ def draw_pixelize_glitch(
     n_slices: int,
     gtype: str = 'random',
     by_pixel: bool = True,
-    channel: int = None
+    channel: int = None,
+    random_slice_width_range: List[int] = [90, 220],
+    random_color_range: List[int] = [15, 260],
+    skip_slices_range: List[int] = None  # if not None, a range is provided, being 0 a skipped line
 ) -> ImageType:
     slice_height = round(area_h / n_slices)
 
@@ -168,8 +172,11 @@ def draw_pixelize_glitch(
         glitch_end_y = area_y + inc + slice_height
         prev_col_inc = 0
 
-        for _ in range(0, area_w):
-            dist = randomi(90, 220) if not by_pixel and randomi(0, 1) else slice_height
+        if skip_slices_range and not randomi(*skip_slices_range):
+            continue
+        for _ in range(area_w):
+            dist = randomi(*random_slice_width_range) \
+                if not by_pixel and randomi(0, 1) else slice_height
             col_inc = prev_col_inc + dist
 
             curr_pixel_color = img[
@@ -179,32 +186,15 @@ def draw_pixelize_glitch(
 
             if gtype == 'random':
                 pixel_color = [
-                    randomi(15, 260),
-                    randomi(15, 260),
-                    randomi(15, 260)
+                    randomi(*random_color_range) for _ in range(3)
                 ]
             elif curr_pixel_color.any():
                 curr_pixel_rgb = [
-                    curr_pixel_color[0][0][0],
-                    curr_pixel_color[0][0][1],
-                    curr_pixel_color[0][0][2],
+                    curr_pixel_color[0][0][rgb] for rgb in range(3)
                 ]
-                if gtype == 'image_based':
-                    pixel_color = colorize_pixel(
-                        *curr_pixel_rgb,
-                        18
-                    )
-                elif gtype == 'image_based_inv':
-                    pixel_color = colorize_pixel(
-                        *[255 - value for value in curr_pixel_rgb],
-                        18
-                    )
-                elif gtype == 'image_based_rand':
-                    random.shuffle(curr_pixel_rgb)
-                    pixel_color = colorize_pixel(
-                        *curr_pixel_rgb,
-                        18
-                    )
+                pixel_color = get_colorized_pixel_image_based(
+                    gtype, curr_pixel_rgb
+                )
             else:
                 pixel_color = curr_pixel_color
 
@@ -236,3 +226,28 @@ def colorize_pixel(
         randomi(g_value - range_size, g_value + range_size),
         randomi(b_value - range_size, b_value + range_size)
     ]
+
+
+def get_colorized_pixel_image_based(
+    gtype: str,
+    curr_pixel_rgb: List[int]
+) -> List[int]:
+    pixel_color = None
+    if gtype == 'image_based':
+        pixel_color = colorize_pixel(
+            *curr_pixel_rgb,
+            18
+        )
+    elif gtype == 'image_based_inv':
+        pixel_color = colorize_pixel(
+            *[255 - value for value in curr_pixel_rgb],
+            18
+        )
+    elif gtype == 'image_based_rand':
+        random.shuffle(curr_pixel_rgb)
+        pixel_color = colorize_pixel(
+            *curr_pixel_rgb,
+            18
+        )
+
+    return pixel_color

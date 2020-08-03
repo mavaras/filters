@@ -115,13 +115,17 @@ def spilled_glitch(
     )
 
 
+# pylint: disable=dangerous-default-value
 def pixelize_glitch(
     img: ImageType,
     area: List[int],
     n_slices: int,
     gtype: str = 'random',
     by_pixel: bool = True,
-    channel: int = None
+    channel: int = None,
+    random_slice_width_range: List[int] = [90, 220],
+    random_color_range: List[int] = [15, 260],
+    skip_slices_range: List[int] = None
 ) -> ImageType:
 
     return draw_pixelize_glitch(
@@ -130,5 +134,8 @@ def pixelize_glitch(
         n_slices,
         gtype,
         by_pixel,
-        channel
+        channel,
+        random_slice_width_range,
+        random_color_range,
+        skip_slices_range
     )
