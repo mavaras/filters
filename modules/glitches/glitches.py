@@ -11,7 +11,9 @@ from modules.glitches.glitches_domain import (
     draw_offset_rect,
     draw_offset_rect_colorized,
     draw_pixelize_glitch,
-    draw_spilled_glitch
+    draw_spilled_glitch,
+    draw_pixelize_glitch_vanish,
+    multiply_image
 )
 
 
@@ -139,3 +141,16 @@ def pixelize_glitch(
         random_color_range,
         skip_slices_range
     )
+
+
+def pixelize_glitch_vanish(
+    img: ImageType,
+    sampling_factor: int
+) -> ImageType:
+
+    return draw_pixelize_glitch_vanish(img, sampling_factor)
+
+
+def multiply(img: ImageType, factor: int) -> ImageType:
+
+    return multiply_image(img, factor)

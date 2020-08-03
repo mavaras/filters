@@ -1,5 +1,6 @@
 from typing import Dict, List, Union
 import random
+import cv2
 import numpy as np
 
 from typ import (
@@ -251,3 +252,27 @@ def get_colorized_pixel_image_based(
         )
 
     return pixel_color
+
+
+def draw_pixelize_glitch_vanish(img: ImageType, sampling_factor: int) -> ImageType:
+    img_height, img_width, _ = img.shape
+    res_img = cv2.resize(
+        img,
+        (img_height // sampling_factor, img_width // sampling_factor),
+        interpolation=cv2.INTER_LANCZOS4
+    )
+    res_img = np.sort(res_img, axis=0)
+    res_img = cv2.resize(
+        res_img,
+        (img_height, img_width),
+        interpolation=cv2.INTER_NEAREST
+    )
+    res_img = np.rot90(res_img, 2)
+    res_img = np.fliplr(res_img)
+
+    return res_img
+
+
+def multiply_image(img: ImageType, factor: int) -> ImageType:
+
+    return img * factor

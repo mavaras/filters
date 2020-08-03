@@ -5,7 +5,9 @@ from .glitches import (
     offset_rect,
     offset_rect_colorized,
     spilled_glitch,
-    pixelize_glitch
+    pixelize_glitch,
+    pixelize_glitch_vanish,
+    multiply
 )
 
 __all__ = [
@@ -15,5 +17,7 @@ __all__ = [
     'offset_rect',
     'offset_rect_colorized',
     'spilled_glitch',
-    'pixelize_glitch'
+    'pixelize_glitch',
+    'pixelize_glitch_vanish',
+    'multiply'
 ]
