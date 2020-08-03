@@ -184,29 +184,25 @@ def draw_pixelize_glitch(
                     randomi(15, 260)
                 ]
             elif curr_pixel_color.any():
+                curr_pixel_rgb = [
+                    curr_pixel_color[0][0][0],
+                    curr_pixel_color[0][0][1],
+                    curr_pixel_color[0][0][2],
+                ]
                 if gtype == 'image_based':
                     pixel_color = colorize_pixel(
-                        curr_pixel_color[0][0][0],
-                        curr_pixel_color[0][0][1],
-                        curr_pixel_color[0][0][2],
+                        *curr_pixel_rgb,
                         18
                     )
                 elif gtype == 'image_based_inv':
                     pixel_color = colorize_pixel(
-                        255 - curr_pixel_color[0][0][0],
-                        255 - curr_pixel_color[0][0][1],
-                        255 - curr_pixel_color[0][0][2],
+                        *[255 - value for value in curr_pixel_rgb],
                         18
                     )
                 elif gtype == 'image_based_rand':
-                    pixels_order = [
-                        curr_pixel_color[0][0][0],
-                        curr_pixel_color[0][0][1],
-                        curr_pixel_color[0][0][2]
-                    ]
-                    random.shuffle(pixels_order)
+                    random.shuffle(curr_pixel_rgb)
                     pixel_color = colorize_pixel(
-                        *pixels_order,
+                        *curr_pixel_rgb,
                         18
                     )
             else:
