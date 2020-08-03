@@ -4,7 +4,6 @@ import modules.colors.colors_domain as colors_domain
 from typ import Image as ImageType
 
 
-
 def colorize(
   img: ImageType,
   area: List[int],

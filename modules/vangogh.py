@@ -1,5 +1,5 @@
 import math
-from typing import Tuple
+from typing import List, Tuple
 from random import randint
 
 from typ import Image as ImageType
@@ -22,13 +22,15 @@ def apply_gaussian_blur(img: ImageType) -> Tuple[ImageType, ImageType]:
     return fieldx, fieldy
 
 
+# pylint: disable=too-many-locals, too-many-arguments, dangerous-default-value
 def vangogh(
     img: ImageType,
     batch_size: int = 10000,
     blur_size: int = 3,
-    min_stroke_length: int = 2,
-    max_stroke_length: int = 8,
-    angle: int = 90,
+    stroke_length_range: List[int] = [2, 8],
+    stroke_angle: int = 90,
+    stroke_start_angle: int = 0,
+    stroke_end_angle: int = 360,
     stroke_scale_divider: int = 1000
 ) -> ImageType:
     grid = randomize_strokes_order(img)
@@ -37,17 +39,19 @@ def vangogh(
     palette = get_palette(img)
     fieldx, fieldy = apply_gaussian_blur(img_gray)
 
-    for h in range(0, len(img), batch_size):
-        for _, (y, x) in enumerate(grid[h : len(grid)]):
+    for height in range(0, len(img), batch_size):
+        for _, (y, x) in enumerate(grid[height:len(grid)]):
             color = palette[nearest_color(palette, img[y][x])]
-            angle = math.degrees(math.atan2(fieldy[y, x], fieldx[y, x])) + angle
+            rotation_angle = math.degrees(math.atan2(fieldy[y, x], fieldx[y, x])) + stroke_angle
             stroke_scale = int(math.ceil(max(img.shape) / stroke_scale_divider))
-            length = randint(min_stroke_length, max_stroke_length)
+            length = randint(*stroke_length_range)
             cv2.ellipse(
                 img_res,
                 (x, y),
                 (length, stroke_scale),
-                angle, 0, 360, color, -1
+                rotation_angle,
+                stroke_start_angle, stroke_end_angle,
+                color, -1
             )
 
     return img_res
