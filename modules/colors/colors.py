@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import List
 import modules.colors.colors_domain as colors_domain
 
 from typ import Image as ImageType
@@ -19,7 +19,7 @@ def colorized_grid(
     area: List[int],
     cols: int,
     rows: int,
-    color_range: Dict[str, int],
+    color_range: List[int],
     channel: int = slice(0, 2)
 ) -> ImageType:
 
@@ -30,3 +30,13 @@ def colorized_grid(
         color_range,
         channel
     )
+
+
+def grayscale(img: ImageType, alpha: int, beta: int) -> ImageType:
+
+    return colors_domain.grayscale(img, alpha, beta)
+
+
+def sepia(img: ImageType) -> ImageType:
+
+    return colors_domain.sepia(img)
