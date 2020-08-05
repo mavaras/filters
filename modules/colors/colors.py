@@ -37,6 +37,6 @@ def grayscale(img: ImageType, alpha: int, beta: int) -> ImageType:
     return colors_domain.grayscale(img, alpha, beta)
 
 
-def sepia(img: ImageType) -> ImageType:
+def sepia(img: ImageType, mode: str = 'none') -> ImageType:
 
-    return colors_domain.sepia(img)
+    return colors_domain.sepia(img, mode)

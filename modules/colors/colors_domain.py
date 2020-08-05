@@ -1,4 +1,5 @@
 from typing import List
+import random
 import numpy as np
 import cv2
 
@@ -60,17 +61,30 @@ def grayscale(img: ImageType, alpha: int, beta: int) -> ImageType:
     return gray_img + 0
 
 
-def sepia(img: ImageType) -> ImageType:
+def sepia(img: ImageType, mode: str = 'none') -> ImageType:
     for row in range(len(img)):
         for col in range(len(img[0])):
             img_r = img[row, col, 0]
             img_g = img[row, col, 1]
             img_b = img[row, col, 2]
             sepia_rgb = {
-                'sepia_r': (img_r * 0.393 + img_g * 0.769 + img_b * 0.189),
+                'sepia_b': (img_r * 0.272 + img_g * 0.534 + img_b * 0.131),
                 'sepia_g': (img_r * 0.349 + img_g * 0.686 + img_b * 0.168),
-                'sepia_b': (img_r * 0.272 + img_g * 0.534 + img_b * 0.131)
+                'sepia_r': (img_r * 0.393 + img_g * 0.769 + img_b * 0.189)
             }
+            if mode == 'randomize':
+                rgb_channels = list(sepia_rgb.keys())
+                random.shuffle(rgb_channels)
+                sepia_rgb = {channel: sepia_rgb[channel] for channel in rgb_channels}
+            elif mode == 'blue':
+                aux = sepia_rgb['sepia_b']
+                sepia_rgb['sepia_b'] = sepia_rgb['sepia_r']
+                sepia_rgb['sepia_r'] = aux
+            elif mode == 'green':
+                aux = sepia_rgb['sepia_g']
+                sepia_rgb['sepia_g'] = sepia_rgb['sepia_r']
+                sepia_rgb['sepia_r'] = aux
+
             for itr, (_, value) in enumerate(sepia_rgb.items()):
                 img[row, col, itr] = value if value <= 255 else 255
 
