@@ -4,6 +4,7 @@ import numpy as np
 
 
 Image = np.ndarray
+ImageBytes = bytes
 Palette = List[List[str]]
 
 BLACK = (0, 0, 0)

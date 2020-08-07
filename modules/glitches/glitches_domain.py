@@ -1,3 +1,4 @@
+import os
 from typing import Dict, List, Union
 import random
 import cv2
@@ -5,6 +6,7 @@ import numpy as np
 
 from typ import (
     Image as ImageType,
+    ImageBytes as ImageBytesType,
     GlitchTypes
 )
 from utils import randomi
@@ -276,3 +278,28 @@ def draw_pixelize_glitch_vanish(img: ImageType, sampling_factor: int) -> ImageTy
 def multiply_image(img: ImageType, factor: int) -> ImageType:
 
     return img * factor
+
+
+def draw_glitch_bytes(
+    img: ImageBytesType,
+    header_length: int,
+    intensity: float
+) -> ImageType:
+    with open('out.jpg', 'wb') as outf:
+        bytes_header = []
+        for byte in range(header_length):
+            img_byte = img.read(1)
+            bytes_header.append(img_byte)
+            outf.write(img_byte)
+        res_bytes = bytes_header
+        while True:
+            img_byte = img.read(1)
+            if not img_byte:
+                break
+            res_byte = img_byte
+            if random.random() < intensity / 100:
+                res_byte = os.urandom(1)
+            res_bytes.append(res_byte)
+            outf.write(res_byte)
+
+    return cv2.imread('out.jpg')

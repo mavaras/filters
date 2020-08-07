@@ -13,7 +13,8 @@ from modules.glitches.glitches_domain import (
     draw_pixelize_glitch,
     draw_spilled_glitch,
     draw_pixelize_glitch_vanish,
-    multiply_image
+    multiply_image,
+    draw_glitch_bytes
 )
 
 
@@ -154,3 +155,23 @@ def pixelize_glitch_vanish(
 def multiply(img: ImageType, factor: int) -> ImageType:
 
     return multiply_image(img, factor)
+
+
+def glitch_bytes(
+    img: str,
+    intensity: float = 0.1
+) -> ImageType:
+    with open(img, 'rb') as imgb:
+        header_size = {
+            'jpg': 9,
+            'jpeg': 9,
+            'png': 8,
+            'bmp': 54,
+            'gif': 14,
+            'tiff': 8
+        }
+        return draw_glitch_bytes(
+            imgb,
+            header_size.get(img.split('.')[-1]),
+            intensity
+        )
