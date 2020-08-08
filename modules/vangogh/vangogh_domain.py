@@ -27,29 +27,34 @@ def apply_gaussian_blur(img: ImageType) -> Tuple[ImageType, ImageType]:
 # pylint: disable=too-many-locals, too-many-arguments, dangerous-default-value
 def draw_vangogh(
     img: ImageType,
-    batch_size: int = 10000,
-    blur_size: int = 3,
-    stroke_length_range: List[int] = [2, 8],
-    stroke_angle: int = 90,
-    stroke_start_angle: int = 0,
-    stroke_end_angle: int = 360,
-    stroke_scale_divider: int = 1000
+    area_x: int,
+    area_y: int,
+    area_w: int,
+    area_h: int,
+    batch_size,
+    blur_size,
+    stroke_length_range,
+    stroke_angle,
+    stroke_start_angle,
+    stroke_end_angle,
+    stroke_scale_divider
 ) -> ImageType:
-    grid = randomize_strokes_order(img)
+    area = img[area_y:area_y + area_h, area_x:area_x + area_w]
+    grid = randomize_strokes_order(area)
     img_res = cv2.medianBlur(img, blur_size)
     img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    palette = get_palette(img)
+    palette = get_palette(area)
     fieldx, fieldy = apply_gaussian_blur(img_gray)
 
     for height in range(0, len(img), batch_size):
         for _, (y, x) in enumerate(grid[height:len(grid)]):
-            color = palette[nearest_color(palette, img[y][x])]
+            color = palette[nearest_color(palette, img[y + area_y][x + area_x])]
             rotation_angle = math.degrees(math.atan2(fieldy[y, x], fieldx[y, x])) + stroke_angle
             stroke_scale = int(math.ceil(max(img.shape) / stroke_scale_divider))
             length = randint(*stroke_length_range)
             cv2.ellipse(
                 img_res,
-                (x, y),
+                (x + area_x, y + area_y),
                 (length, stroke_scale),
                 rotation_angle,
                 stroke_start_angle, stroke_end_angle,
