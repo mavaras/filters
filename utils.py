@@ -12,6 +12,8 @@ from typ import (
 )
 
 
+CASCADE_FOLDER = 'res/cascade'
+
 def regulate(
     img: ImageType,
     hue: int = 0,
@@ -49,23 +51,6 @@ def nearest_color(palette: PaletteType, value: int) -> int:
     return euclidean_distance.index(min(euclidean_distance))
 
 
-def vector_field(img: ImageType):
-    flat_image = (img[:, :, 0] + img[:, :, 1] + img[:, :, 2]) / 3.
-    gd = 4
-
-    _, ax = plt.subplots(1, 1)
-    the_image = ax.imshow(
-        flat_image,
-        zorder=0,
-        alpha=1.0,
-        cmap='Greys_r',
-        origin='upper',
-        interpolation='hermite',
-    )
-
-    return the_image
-
-
 def direction(n_1: int, n_2: int) -> int:
     return math.atan2(n_1, n_2)
 
@@ -90,7 +75,7 @@ def randomized_grid(height: int, width: int, scale: int):
 
 def randomize_strokes_order(img: ImageType):
     grid = []
-    img_height, img_width = img.shape[:2]
+    img_height, img_width, _ = img.shape
     for row in range(0, img_height, 2):
         for col in range(0, img_width, 2):
             grid.append((row, col))
@@ -129,3 +114,33 @@ def show_palette(palette: PaletteType):
                     (x * 80 + 80, y * 80 + 80),
                     color, -1
                 )
+
+
+def pixel_in_area(
+    pixel_x: int,
+    pixel_y: int,
+    area_x: int,
+    area_y: int,
+    area_w: int,
+    area_h: int
+) -> bool:
+
+    return (pixel_x >= area_x and pixel_x >= area_w) or (pixel_y >= area_y and pixel_y <= area_h)
+
+
+def get_face_classifier() -> cv2.CascadeClassifier:
+    return cv2.CascadeClassifier(
+        f'{CASCADE_FOLDER}/haarcascade_frontalface_default.xml'
+    )
+
+
+def get_eyes_classifier() -> cv2.CascadeClassifier:
+    return cv2.CascadeClassifier(f'{CASCADE_FOLDER}/haarcascade_eye.xml')
+
+
+def get_faces(img: ImageType) -> np.ndarray:
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    face_cascade = get_face_classifier()
+    faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+
+    return faces

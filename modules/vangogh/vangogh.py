@@ -2,8 +2,8 @@ from typing import List, Tuple
 import cv2
 
 from modules.vangogh.vangogh_domain import draw_vangogh
-from modules.vaporize import get_face_classifier
 from typ import Image as ImageType
+from utils import get_faces
 
 
 # pylint: disable=too-many-locals, too-many-arguments, dangerous-default-value
@@ -20,11 +20,9 @@ def vangogh(
     stroke_scale_divider: int = 1000
 ) -> ImageType:
     if face:
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        face_cascade = get_face_classifier()
-        faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+        faces = get_faces(img)
         area = [int(element) for element in faces[0]]
-        del face, gray, face_cascade, faces
+        del face, faces
     elif not area:
         area = [0, 0, img.shape[1], img.shape[0]]
 

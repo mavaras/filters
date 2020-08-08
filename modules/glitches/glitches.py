@@ -5,7 +5,6 @@ import numpy as np
 from typ import (
     Image as ImageType,
 )
-from modules.vaporize import get_face_classifier
 from modules.glitches.glitches_domain import (
     draw_glitch,
     draw_offset_rect,
@@ -16,6 +15,7 @@ from modules.glitches.glitches_domain import (
     multiply_image,
     draw_glitch_bytes
 )
+from utils import get_faces
 
 
 def glitch(
@@ -26,9 +26,7 @@ def glitch(
     n_slices: int = 20
 ) -> ImageType:
     if face:
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        face_cascade = get_face_classifier()
-        faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+        faces = get_faces(img)
         for _face in faces:
             _face = [int(element) for element in _face]
             draw_glitch(img, *_face, n_slices, translation_x)
