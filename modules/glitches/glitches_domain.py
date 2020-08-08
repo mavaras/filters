@@ -1,4 +1,5 @@
 import os
+import tempfile
 from typing import Dict, List, Union
 import random
 import cv2
@@ -285,13 +286,11 @@ def draw_glitch_bytes(
     header_length: int,
     intensity: float
 ) -> ImageType:
-    with open('out.jpg', 'wb') as outf:
-        bytes_header = []
+    _, tmp_file_path = tempfile.mkstemp()
+    with open(tmp_file_path, 'wb') as outf:
         for byte in range(header_length):
             img_byte = img.read(1)
-            bytes_header.append(img_byte)
             outf.write(img_byte)
-        res_bytes = bytes_header
         while True:
             img_byte = img.read(1)
             if not img_byte:
@@ -299,7 +298,6 @@ def draw_glitch_bytes(
             res_byte = img_byte
             if random.random() < intensity / 100:
                 res_byte = os.urandom(1)
-            res_bytes.append(res_byte)
             outf.write(res_byte)
 
-    return cv2.imread('out.jpg')
+        return cv2.imread(tmp_file_path)
