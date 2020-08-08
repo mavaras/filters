@@ -16,14 +16,16 @@ def apply_gaussian_blur(img: ImageType) -> Tuple[ImageType, ImageType]:
     kernel = (kernel_size, kernel_size)
     fieldx = cv2.Scharr(img, cv2.CV_32F, 1, 0) / 15.36
     fieldy = cv2.Scharr(img, cv2.CV_32F, 0, 1) / 15.36
+
     for _ in range(1):
         fieldx = cv2.GaussianBlur(fieldx, kernel, 0)
         fieldy = cv2.GaussianBlur(fieldy, kernel, 0)
+
     return fieldx, fieldy
 
 
 # pylint: disable=too-many-locals, too-many-arguments, dangerous-default-value
-def vangogh(
+def draw_vangogh(
     img: ImageType,
     batch_size: int = 10000,
     blur_size: int = 3,
