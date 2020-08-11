@@ -21,20 +21,10 @@ Modules
 -----------
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 5
 
    modules.colors
    modules.glitches
    modules.vangogh
    modules.vaporize
    modules.grid
-
-
-modules.grid module
--------------------
-
-.. automodule:: modules.grid
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
