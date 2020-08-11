@@ -21,6 +21,11 @@ def grid(
 
     :return: Resultling image
     :rtype: ImageType
+
+    .. image:: imgs/me.jpeg
+        :scale: 65 %
+    .. image:: imgs/me_grid.jpg
+        :scale: 65 %
     """
 
     return draw_grid(

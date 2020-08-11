@@ -35,6 +35,19 @@ def vangogh(
 
     :return ImageType: Resulting image
     :rtype: ImageType
+
+    .. image:: imgs/me.jpeg
+        :scale: 65 %
+    .. image:: imgs/me_vangogh.jpg
+        :scale: 65 %
+    .. image:: imgs/me_vangogh2.jpg
+        :scale: 65 %
+    .. image:: imgs/me_vangogh3.jpg
+        :scale: 65 %
+    .. image:: imgs/me_vangogh5.jpg
+        :scale: 65 %
+    .. image:: imgs/me_vangogh4.jpg
+        :scale: 65 %
     """
 
     if face:
@@ -43,5 +56,6 @@ def vangogh(
         del face, faces
     elif not area:
         area = [0, 0, img.shape[1], img.shape[0]]
+        del face
 
     return draw_vangogh(img, *area, *list(locals().values())[2:])
