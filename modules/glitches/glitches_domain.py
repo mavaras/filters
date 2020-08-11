@@ -288,7 +288,7 @@ def draw_glitch_bytes(
 ) -> ImageType:
     _, tmp_file_path = tempfile.mkstemp()
     with open(tmp_file_path, 'wb') as outf:
-        for byte in range(header_length):
+        for _ in range(header_length):
             img_byte = img.read(1)
             outf.write(img_byte)
         while True:
