@@ -52,10 +52,11 @@ def glitch_bytes(
         )
 
 
+# pylint: disable=dangerous-default-value
 def glitch(
     img: ImageType,
-    translation_x: Dict[str, int],
     area: List[int] = None,
+    translation_x: List[int] = [0, 0],
     face: bool = False,
     n_slices: int = 20
 ) -> ImageType:
@@ -63,7 +64,7 @@ def glitch(
     image, by drawing different distortioned 'slices'.
 
     :param ImageType img: A numpy array representing an image
-    :param Dict[str,int] translation_x: lower/upper limit for generating random glitch slices width
+    :param List[int] translation_x: [min, max] range for generating random glitch slices width
     :param List[int] area: img area (x, y, w, h) to apply the filter, default to None (all image)
     :param bool face: If True filter is applied to img face area (if exists), defaults to False
     :param int n_slices: nº of glitch 'slices' that will appear in the provided area, defaults to 20
@@ -83,17 +84,18 @@ def glitch(
     return img
 
 
+# pylint: disable=dangerous-default-value
 def abstract_glitch(
     img: ImageType,
-    translation_x: Dict[str, int],
     area: List[int] = None,
+    translation_x: List[int] = [0, 0],
     n_slices: int = 20
 ) -> ImageType:
     """ Applies a glitch based on a pattern of repetition of rectangles in the specified area
      of the given image.
 
     :param ImageType img: A numpy array representing an image
-    :param Dict[str,int] translation_x: lower/upper limit for generating random glitch rectangles width
+    :param List[int] translation_x: [min, max] range for generating random glitch rectangles width
     :param List[int] area: img area (x, y, w, h) to apply the filter, default to None (all image)
     :param int n_slices: nº of glitch 'slices' that will appear in the provided area, defaults to 20
 
@@ -111,10 +113,11 @@ def abstract_glitch(
     return img
 
 
+# pylint: disable=dangerous-default-value
 def cycle_glitch(
     img: ImageType,
-    translation_x: Dict[str, int],
     area: List[int],
+    translation_x: List[int] = [0, 0],
     n_slices: int = 20
 ) -> ImageType:
     """  Draws kind of 'artificial' glitch effect on the specified area of the provided
@@ -122,7 +125,7 @@ def cycle_glitch(
     making the slices follow a cyclic distortion.
 
     :param ImageType img: A numpy array representing an image
-    :param Dict[str,int] translation_x: lower/upper limit for generating random glitch slices width
+    :param List[int] translation_x: [min, max] range for generating random glitch slices width
     :param List[int] area: img area (x, y, w, h) to apply the filter, default to None (all image)
     :param int n_slices:
         nº of glitch 'slices' that will appear in the provided area, defaults to 20
@@ -224,7 +227,7 @@ def spilled_glitch(
     )
 
 
-# pylint: disable=dangerous-default-value
+# pylint: disable=dangerous-default-value, too-many-arguments
 def pixelize_glitch(
     img: ImageType,
     area: List[int],

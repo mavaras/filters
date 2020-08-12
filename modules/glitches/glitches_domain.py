@@ -20,7 +20,7 @@ def draw_glitch(
     area_w: int,
     area_h: int,
     n_slices: int,
-    translation_x: Dict[str, int],
+    translation_x: List[int],
     gtype: str = 'normal'
 ) -> ImageType:
     _, img_width, _ = img.shape
@@ -38,10 +38,7 @@ def draw_glitch(
             glitch_end_y = area_y + inc + slice_height
         glitch_start_y = area_y + inc
 
-        dist = randomi(
-            translation_x.get('low_lim', 0),
-            translation_x.get('up_lim', 0)
-        )
+        dist = randomi(*translation_x)
 
         glitch_w = area_x + dist
         if glitch_w + area_w > img_width:
