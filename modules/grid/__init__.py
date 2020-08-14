@@ -1,7 +1,7 @@
 from .grid import (
-    grid
+    grid, diagonal_grid
 )
 
 __all__ = [
-    'grid'
+    'grid', 'diagonal_grid'
 ]
