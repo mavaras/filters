@@ -44,7 +44,8 @@ def diagonal_grid(
     cols: int,
     rows: int,
     line_width: int = 2,
-    color: Tuple[int] = BLACK
+    color: Tuple[int] = BLACK,
+    offset: int = 0
 ) -> ImageType:
     """ Draws a diagonal grid (45 degrees) of the specified size on the given image
 
@@ -53,6 +54,7 @@ def diagonal_grid(
     :param int rows: Number of rows of the grid
     :param int line_width: Number of rows of the grid, defults to 2
     :param Tuple[int] color: Grid strokes color, defults to BLACK
+    :param int offset: Grid strokes offset, defults to 0
 
     :return: Resultling image
     :rtype: ImageType
@@ -62,5 +64,6 @@ def diagonal_grid(
         img,
         cols, rows,
         line_width,
-        color
+        color,
+        offset
     )

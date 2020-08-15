@@ -29,7 +29,8 @@ def draw_diagonal_grid(
     cols: int,
     rows: int,
     line_width: int,
-    color: Tuple[int]
+    color: Tuple[int],
+    offset: int
 ) -> ImageType:
     img_height, img_width, _ = img.shape
     row_height = img_height // rows
@@ -37,11 +38,11 @@ def draw_diagonal_grid(
     start_poss = []
     end_poss = []
     for row in range(rows):
-        row_pos = row_height * row
+        row_pos = row_height * row + offset * row
         start_poss += [(0, row_pos), (row_pos, 0)]
         end_poss += [(img_height - row_pos, img_width), (img_height, img_width - row_pos)]
     for col in range(cols):
-        col_pos = col_width * col
+        col_pos = col_width * col + offset * col
         start_poss += [(img_width, col_pos), (0, img_height - col_pos)]
         end_poss += [(col_pos, img_height), (img_width - col_pos, 0)]
 
