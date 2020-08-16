@@ -34,6 +34,15 @@ def glitch_bytes(
 
     :return: Glitched image
     :rtype: ImageType
+
+    .. image:: imgs/me.jpeg
+        :scale: 65 %
+    .. image:: imgs/me_glitch_bytes1.jpg
+        :scale: 65 %
+    .. image:: imgs/me_glitch_bytes2.jpg
+        :scale: 65 %
+    .. image:: imgs/me_glitch_bytes3.jpg
+        :scale: 65 %
     """
 
     with open(img, 'rb') as imgb:
@@ -101,7 +110,17 @@ def abstract_glitch(
 
     :return: Resulting image
     :rtype: ImageType
+
+    .. image:: imgs/me.jpeg
+        :scale: 65 %
+    .. image:: imgs/me_abstract_glitch1.jpg
+        :scale: 65 %
+    .. image:: imgs/me_abstract_glitch2.jpg
+        :scale: 65 %
+    .. image:: imgs/me_abstract_glitch3.jpg
+        :scale: 65 %
     """
+
     draw_glitch(
         img,
         *area,
@@ -117,7 +136,7 @@ def abstract_glitch(
 def cycle_glitch(
     img: ImageType,
     area: List[int],
-    translation_x: List[int] = [0, 0],
+    translation_x: List[int],
     n_slices: int = 20
 ) -> ImageType:
     """  Draws kind of 'artificial' glitch effect on the specified area of the provided
@@ -132,6 +151,11 @@ def cycle_glitch(
 
     :return: Resulting image
     :rtype: ImageType
+
+    .. image:: imgs/me.jpeg
+        :scale: 65 %
+    .. image:: imgs/me_cycle_glitch.jpg
+        :scale: 65 %
     """
 
     draw_glitch(
@@ -163,6 +187,11 @@ def offset_rect(
 
     :return: Resulting image
     :rtype: ImageType
+
+    .. image:: imgs/me.jpeg
+        :scale: 65 %
+    .. image:: imgs/me_offset_rect.jpg
+        :scale: 65 %
     """
 
     return draw_offset_rect(
@@ -189,6 +218,11 @@ def offset_rect_colorized(
 
     :return: Resulting image
     :rtype: ImageType
+
+    .. image:: imgs/me.jpeg
+        :scale: 65 %
+    .. image:: imgs/me_offset_rect_colorized.jpg
+        :scale: 65 %
     """
 
     return draw_offset_rect_colorized(
@@ -217,6 +251,11 @@ def spilled_glitch(
 
     :return: Resulting image
     :rtype: ImageType
+
+    .. image:: imgs/me.jpeg
+        :scale: 65 %
+    .. image:: imgs/me_spilled.jpg
+        :scale: 65 %
     """
 
     return draw_spilled_glitch(
@@ -245,6 +284,7 @@ def pixelize_glitch(
     :param ImageType img: A numpy array representing an image
     :param List[int] area: img area (x, y, w, h) to apply the filter, default to None (all image)
     :param int n_slices: nº of glitch 'rows' that will appear in the provided area
+    :param str gtype: 'image_based', 'image_based_inv', 'image_based_rand' or 'random', defaults to 'random'
     :param bool by_pixel:
         If true, the colorize process will be applied to each pixel,
         if False it will be applied to slices of a determined width, defaults to True
@@ -258,6 +298,19 @@ def pixelize_glitch(
 
     :return: Resulting image
     :rtype: ImageType
+
+    .. image:: imgs/me.jpeg
+        :scale: 65 %
+    .. image:: imgs/me_pixelize3.jpg
+        :scale: 65 %
+    .. image:: imgs/me_pixelize4.jpg
+        :scale: 65 %
+    .. image:: imgs/me_pixelize5.jpg
+        :scale: 65 %
+    .. image:: imgs/me_pixelize2.jpg
+        :scale: 65 %
+    .. image:: imgs/me_pixelize1.jpg
+        :scale: 65 %
     """
 
     return draw_pixelize_glitch(
@@ -288,6 +341,11 @@ def pixelize_glitch_vanish(
 
     :return: Resulting image
     :rtype: ImageType
+
+    .. image:: imgs/me.jpeg
+        :scale: 65 %
+    .. image:: imgs/me_vanish.jpg
+        :scale: 65 %
     """
 
     return draw_pixelize_glitch_vanish(img, sampling_factor)
