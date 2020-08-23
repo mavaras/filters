@@ -1,5 +1,4 @@
-from typing import List, Tuple
-import cv2
+from typing import List
 
 from modules.vangogh.vangogh_domain import draw_vangogh
 from typ import Image as ImageType
@@ -10,6 +9,7 @@ from utils import get_faces
 def vangogh(
     img: ImageType,
     area: List[int] = None,
+    pattern_image: ImageType = None,
     face: bool = False,
     batch_size: int = 10000,
     blur_size: int = 3,
@@ -24,6 +24,9 @@ def vangogh(
 
     :param ImageType img: A numpy array representing an Image
     :param List[int] area: img area (x, y, w, h) to apply the filter, defaults to None
+    :param ImageType pattern_image:
+        another image which will act as a color template,
+        so palette colors will be taken from this image instead of from img, defaults to None
     :param bool face: If True filter is applied to img face area (if exists), defaults to False
     :param int batch_size: not so useful, defaults to 10000
     :param int blur_size: Gaussian Blur kernel size, defaults to 3

@@ -31,19 +31,23 @@ def draw_vangogh(
     area_y: int,
     area_w: int,
     area_h: int,
-    batch_size,
-    blur_size,
-    stroke_length_range,
-    stroke_angle,
-    stroke_start_angle,
-    stroke_end_angle,
-    stroke_scale_divider
+    pattern_image: ImageType,
+    batch_size: int,
+    blur_size: int,
+    stroke_length_range: List[int],
+    stroke_angle: int,
+    stroke_start_angle: int,
+    stroke_end_angle: int,
+    stroke_scale_divider: int,
 ) -> ImageType:
     area = img[area_y:area_y + area_h, area_x:area_x + area_w]
     grid = randomize_strokes_order(area)
     img_res = cv2.medianBlur(img, blur_size)
     img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    palette = get_palette(area)
+    if pattern_image is None:
+        palette = get_palette(area)
+    else:
+        palette = get_palette(pattern_image[:, :])
     fieldx, fieldy = apply_gaussian_blur(img_gray)
 
     for height in range(0, len(img), batch_size):
