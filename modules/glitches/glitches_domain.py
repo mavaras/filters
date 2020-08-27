@@ -1,6 +1,6 @@
 import os
 import tempfile
-from typing import Dict, List, Union
+from typing import Dict, List, Tuple, Union
 import random
 import cv2
 import numpy as np
@@ -298,3 +298,8 @@ def draw_glitch_bytes(
             outf.write(res_byte)
 
         return cv2.imread(tmp_file_path)
+
+
+def draw_glitch_sharp(img: ImageType, kernel: Tuple[int, int]) -> ImageType:
+    blur = cv2.GaussianBlur(img, kernel, 0)
+    return img - blur

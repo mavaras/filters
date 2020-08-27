@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Tuple
 import cv2
 import numpy as np
 
@@ -13,7 +13,8 @@ from modules.glitches.glitches_domain import (
     draw_spilled_glitch,
     draw_pixelize_glitch_vanish,
     multiply_image,
-    draw_glitch_bytes
+    draw_glitch_bytes,
+    draw_glitch_sharp
 )
 from utils import get_faces
 
@@ -349,6 +350,10 @@ def pixelize_glitch_vanish(
     """
 
     return draw_pixelize_glitch_vanish(img, sampling_factor)
+
+
+def glitch_sharp(img: ImageType, kernel: Tuple[int, int] = (3, 3)) -> ImageType:
+    return draw_glitch_sharp(img, kernel)
 
 
 def multiply(img: ImageType, factor: int) -> ImageType:

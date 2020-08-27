@@ -8,7 +8,8 @@ from .glitches import (
     pixelize_glitch,
     pixelize_glitch_vanish,
     multiply,
-    glitch_bytes
+    glitch_bytes,
+    glitch_sharp
 )
 
 __all__ = [
@@ -21,5 +22,6 @@ __all__ = [
     'pixelize_glitch',
     'pixelize_glitch_vanish',
     'multiply',
-    'glitch_bytes'
+    'glitch_bytes',
+    'glitch_sharp'
 ]
