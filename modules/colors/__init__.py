@@ -2,12 +2,14 @@ from .colors import (
     colorize,
     colorized_grid,
     grayscale,
-    sepia
+    sepia,
+    negative
 )
 
 __all__ = [
     'colorized_grid',
     'colorize',
     'grayscale',
-    'sepia'
+    'sepia',
+    'negative'
 ]

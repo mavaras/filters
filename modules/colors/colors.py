@@ -81,3 +81,7 @@ def sepia(img: ImageType, mode: str = 'none') -> ImageType:
     """
 
     return colors_domain.sepia(img, mode)
+
+
+def negative(img: ImageType) -> ImageType:
+    return colors_domain.negative(img)

@@ -89,3 +89,9 @@ def sepia(img: ImageType, mode: str = 'none') -> ImageType:
                 img[row, col, itr] = value if value <= 255 else 255
 
     return img
+
+
+def negative(img: ImageType) -> ImageType:
+    vector = np.vectorize(lambda x: -x)
+
+    return vector(img)
