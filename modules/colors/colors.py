@@ -84,4 +84,17 @@ def sepia(img: ImageType, mode: str = 'none') -> ImageType:
 
 
 def negative(img: ImageType) -> ImageType:
+    """ Wraps numpy's vecorize so image gets inverted
+
+    :param ImageType img: A numpy array representing an image
+
+    :return: Resulting image
+    :rtype: ImageType
+
+    .. image:: imgs/me.jpeg
+        :scale: 65 %
+    .. image:: imgs/me_negative.jpg
+        :scale: 65 %
+    """
+
     return colors_domain.negative(img)
