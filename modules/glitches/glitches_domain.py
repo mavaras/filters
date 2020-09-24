@@ -302,4 +302,8 @@ def draw_glitch_bytes(
 
 def draw_glitch_sharp(img: ImageType, kernel: Tuple[int, int]) -> ImageType:
     blur = cv2.GaussianBlur(img, kernel, 0)
+    def a(x):
+        return -x
+    vector = np.vectorize(a)
+    blur = vector(blur)
     return img - blur

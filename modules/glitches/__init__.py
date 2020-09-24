@@ -9,7 +9,7 @@ from .glitches import (
     pixelize_glitch_vanish,
     multiply,
     glitch_bytes,
-    glitch_sharp
+    glitch_plasma
 )
 
 __all__ = [
@@ -23,5 +23,5 @@ __all__ = [
     'pixelize_glitch_vanish',
     'multiply',
     'glitch_bytes',
-    'glitch_sharp'
+    'glitch_plasma'
 ]

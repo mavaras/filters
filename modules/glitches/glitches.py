@@ -352,7 +352,20 @@ def pixelize_glitch_vanish(
     return draw_pixelize_glitch_vanish(img, sampling_factor)
 
 
-def glitch_sharp(img: ImageType, kernel: Tuple[int, int] = (3, 3)) -> ImageType:
+def glitch_plasma(img: ImageType, kernel: Tuple[int] = (3, 3)) -> ImageType:
+    """ Applies a color-sections based glitch to the given image.
+
+    :param ImageType img: A numpy array representing an image
+    :param Tuple[int] kernel: Kernel to apply to the gaussian blur filter
+
+    :return: Resulting image
+    :rtype: ImageType
+
+    .. image:: imgs/me.jpeg
+        :scale: 65 %
+    .. image:: imgs/me_plasma.jpg
+        :scale: 65 %
+    """
     return draw_glitch_sharp(img, kernel)
 
 
