@@ -19,6 +19,11 @@ def colorize(
 
     :return: Resulting colorized image
     :rtype: ImageType
+
+    .. image:: imgs/me.jpeg
+        :scale: 65 %
+    .. image:: imgs/me_colorize.jpg
+        :scale: 65 %
     """
 
     return colors_domain.colorize_image(img, *area, color, channel)
